@@ -1,9 +1,10 @@
 from tkinter import *
 
-from comidas import check_button_comidas, texto_comidas, precios_comidas
-from bebidas import check_button_bebidas, texto_bebidas, precios_bebidas
-from postres import check_button_postres, texto_postres, precios_postres
-from precios import generar_recibo, generar_calculadora
+from comidas import check_button_comidas
+from bebidas import check_button_bebidas
+from postres import check_button_postres
+from precios import generar_panel_totales, generar_panel_calculadora
+from precios import calcular_totales, generar_recibo, guardar_recibo, resetear
 
 # Iniciamos la ventana
 aplicacion = Tk()
@@ -69,52 +70,7 @@ subtotal = StringVar()
 impuestos = StringVar()
 total = StringVar()
 
-etiqueta_costo_comida = Label(panel_costos, text="Total Comidas", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-texto_costo_comida = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=total_comidas)
-etiqueta_costo_bebida = Label(panel_costos, text="Total Bebidas", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-texto_costo_bebida = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=total_bebidas)
-etiqueta_costo_postre = Label(panel_costos, text="Total Postres", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-texto_costo_postre = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=total_postres)
-
-etiqueta_subtotal = Label(panel_costos, text="Subtotal", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-texto_subtotal = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=subtotal)
-etiqueta_impuestos = Label(panel_costos, text="Impuestos", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-texto_impuestos = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=impuestos)
-etiqueta_total = Label(panel_costos, text="Total", font=("Arial", 12, "bold"),
-                            bg="azure4", fg="white")
-
-texto_total = Entry(panel_costos, font=("Arial", 12, "bold"),
-                        bd=1, width=10, state="readonly",
-                        textvariable=total)
-
-etiqueta_costo_comida.grid(row=0, column=0, padx=5, pady=5)
-texto_costo_comida.grid(row=0, column=1, padx=5, pady=5)
-etiqueta_costo_bebida.grid(row=1, column=0, padx=5, pady=5)
-texto_costo_bebida.grid(row=1, column=1, padx=5, pady=5)
-etiqueta_costo_postre.grid(row=2, column=0, padx=5, pady=5)
-texto_costo_postre.grid(row=2, column=1, padx=5, pady=5)
-
-etiqueta_subtotal.grid(row=0, column=2)
-texto_subtotal.grid(row=0, column=3, padx=5, pady=5)
-etiqueta_impuestos.grid(row=1, column=2)
-texto_impuestos.grid(row=1, column=3, padx=5, pady=5)
-etiqueta_total.grid(row=2, column=2)
-texto_total.grid(row=2, column=3, padx=10, pady=5)
+generar_panel_totales(panel_costos, total_comidas, total_bebidas, total_postres, subtotal, impuestos, total)
 
 # ========== Panel Derecho ==========
 panel_derecho = Frame(aplicacion, bd=1, bg="azure4", relief=FLAT, padx=5, pady=5)
@@ -124,49 +80,18 @@ panel_derecho.pack(side=RIGHT)
 panel_calculadora = Frame(panel_derecho, bd=1, bg="lightgrey", relief=FLAT)
 panel_calculadora.pack()
 
-generar_calculadora(panel_calculadora)
+generar_panel_calculadora(panel_calculadora)
 
 # Panel Recibo
 panel_recibo = Frame(panel_derecho, bd=1, bg="lightgrey", relief=FLAT)
 panel_recibo.pack()
 
-generar_recibo(panel_recibo)
+texto_recibo = Text(panel_recibo, font=("Arial", 12), bd=1, width=60, height=10)
+texto_recibo.grid(row=0, column=0, padx=5, pady=5)
 
 # Panel Botones
 botones = ['total', 'recibo', 'guardar', 'resetear']
 columnas = 0
-
-def calcular_totales():   
-    subtotal_comidas = 0
-    indice_precios_comidas = 0
-    for cantidad in texto_comidas:
-        subtotal_comidas += float(cantidad.get()) * precios_comidas[indice_precios_comidas]
-        indice_precios_comidas += 1
-    
-    subtotal_bebidas = 0
-    indice_precios_bebidas = 0
-    for cantidad in texto_bebidas:
-        subtotal_bebidas += float(cantidad.get()) * precios_bebidas[indice_precios_bebidas]
-        indice_precios_bebidas += 1
-    
-    subtotal_postres = 0
-    indice_precios_postres = 0
-    for cantidad in texto_postres:
-        subtotal_postres += float(cantidad.get()) * precios_postres[indice_precios_postres]
-        indice_precios_postres += 1
-    
-    calculo_subtotal = subtotal_comidas + subtotal_bebidas + subtotal_postres
-    calculo_impuestos = calculo_subtotal * 0.21
-    calculo_total = calculo_subtotal + calculo_impuestos
-    
-    total_comidas.set(f"{round(subtotal_comidas, 2)}€")
-    total_bebidas.set(f"{round(subtotal_bebidas, 2)}€")
-    total_postres.set(f"{round(subtotal_postres, 2)}€")
-    
-    subtotal.set(f"{round(calculo_subtotal, 2)}€")
-    impuestos.set(f"{round(calculo_impuestos, 2)}€")
-    total.set(f"{round(calculo_total, 2)}€")
-
 
 panel_botones = Frame(panel_derecho, bd=1, bg="lightgrey", relief=FLAT)
 panel_botones.pack()
@@ -178,7 +103,13 @@ for boton in botones:
     columnas += 1
     
     if boton["text"] == "Total":
-        boton.config(command=calcular_totales)
+        boton.config(command=lambda: calcular_totales(total_comidas, total_bebidas, total_postres, subtotal, impuestos, total))
+    elif boton["text"] == "Recibo":
+        boton.config(command=lambda: generar_recibo(texto_recibo, total_comidas, total_bebidas, total_postres, subtotal, impuestos, total))
+    elif boton["text"] == "Guardar":
+        boton.config(command=lambda: guardar_recibo(texto_recibo))
+    else:
+        boton.config(command=lambda: resetear(texto_recibo, total_comidas, total_bebidas, total_postres, subtotal, impuestos, total))
 
 
 
