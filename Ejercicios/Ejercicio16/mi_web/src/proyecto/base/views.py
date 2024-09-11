@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -18,6 +20,24 @@ class InicioSesion(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('pendientes')
+
+class Registrarse(FormView):
+    template_name = 'registro.html'
+    form_class = UserCreationForm
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('pendientes')
+    
+    def form_valid(self, form):
+        user = form.save()
+        if user is not None:
+            login(self.request, user)
+        return super(Registrarse, self).form_valid(form)
+    
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('pendientes')
+        else:
+            return super(Registrarse, self).get(*args, **kwargs)
 
 class ListaPendientes(LoginRequiredMixin, ListView):
     model = Tarea
