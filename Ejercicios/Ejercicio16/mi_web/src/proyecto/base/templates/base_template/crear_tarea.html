@@ -1,11 +1,16 @@
-<h1>Formulario de Tareas</h1>
-<a href="{% url 'pendientes' %}">Volver</a>
-<form action="" method="post">
-    
-    {% csrf_token %}
+{% extends 'base_template/principal.html' %}
+{% block content %}
+        
+    <h1>Formulario de Tareas</h1>
+    <a href="{% url 'pendientes' %}">Volver</a>
+    <form action="" method="post">
+        
+        {% csrf_token %}
 
-    {{form.as_p}}
+        {{form.as_p}}
 
-    <input type="submit" name="Enviar">
+        <input type="submit" name="Enviar">
 
-</form>
+    </form>
+
+{% endblock content%}

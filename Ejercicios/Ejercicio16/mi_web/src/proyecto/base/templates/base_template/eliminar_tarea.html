@@ -1,8 +1,12 @@
-<form method="POST">
-    
-    {% csrf_token %}
-    <p>¿Deseas eliminar la tarea: "{{tarea}}!?</p>
-    <input type="submit" value="Eliminar">
-    <a href="{% url 'pendientes' %}">Cancelar</a>
+{% extends 'base_template/principal.html' %}
 
-</form>
+{% block content %}
+    <form method="POST">
+        
+        {% csrf_token %}
+        <p>¿Deseas eliminar la tarea: "{{tarea}}!?</p>
+        <input type="submit" value="Eliminar">
+        <a href="{% url 'pendientes' %}">Cancelar</a>
+
+    </form>
+{% endblock content %}

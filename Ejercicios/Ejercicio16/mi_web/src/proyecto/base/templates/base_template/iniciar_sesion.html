@@ -1,11 +1,15 @@
-<h1>Iniciar Sesión</h1>
+{% extends 'base_template/principal.html' %}
 
-<form action="" method="post">
+{% block content %}
+    <h1>Iniciar Sesión</h1>
 
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" name="Enviar">
+    <form action="" method="post">
 
-</form>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" name="Enviar">
 
-<p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate</a></p>
+    </form>
+
+    <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate</a></p>
+{% endblock content %}

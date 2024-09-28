@@ -1,46 +1,52 @@
-{% if request.user.is_authenticated %}
-    <p>{{request.user}}</p>
-    <form action="{% url 'cerrar_sesion' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Cerrar Sesión">
+{% extends 'base_template/principal.html' %}
+
+{% block content %}
+        
+    {% if request.user.is_authenticated %}
+        <p>{{request.user}}</p>
+        <form action="{% url 'cerrar_sesion' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Cerrar Sesión">
+        </form>
+        <hr/>
+    {% else %}
+        <a href="{% url 'iniciar_sesion' %}">Iniciar Sesión</a>
+        <hr/>
+    {% endif %}
+
+    <h1>Lista de Pendientes</h1>
+
+    <form method="GET">
+        <input type="text" name="area-buscar" value="{{valor_buscado}}">
+        <input type="submit" value="Buscar">
     </form>
-    <hr/>
-{% else %}
-    <a href="{% url 'iniciar_sesion' %}">Iniciar Sesión</a>
-    <hr/>
-{% endif %}
 
-<h1>Lista de Pendientes</h1>
+    <table>
+        <tr>
+            <th>Tarea</th>
+            <th>Fecha</th>
+            <th>Completada</th>
+        </tr>
 
-<table>
-    <tr>
-        <th>Tarea</th>
-        <th>Fecha</th>
-        <th>Completada</th>
-    </tr>
+        {% for tarea in tareas %}
+        <tr>
+            <td>{{ tarea.titulo }}</td>
+            <td>{{ tarea.fecha.day }}/{{ tarea.fecha.month }}/{{ tarea.fecha.year }} - {{ tarea.fecha.hour }}:{{ tarea.fecha.minute }}</td>
+            <td>{{ tarea.completada }}</td>
+            <td><a href="{% url 'actualizar_tarea' tarea.id %}">Editar</a></td>
+            <td><a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a></td>
+        </tr>
 
-    {% for tarea in tareas %}
-    <tr>
-        <td>
-            <a href="{% url 'detalle_tarea' tarea.id %}">
-                {{ tarea.titulo }}
-            </a>
-        </td>
-        <td>{{ tarea.fecha.day }}/{{ tarea.fecha.month }}/{{ tarea.fecha.year }} - {{ tarea.fecha.hour }}:{{ tarea.fecha.minute }}</td>
-        <td>{{ tarea.completada }}</td>
-        <td><a href="{% url 'actualizar_tarea' tarea.id %}">Editar</a></td>
-        <td><a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a></td>
-    </tr>
+        
+        {% empty %}
+        <h3>No hay tareas pendientes</h3>
+        
+        {% endfor %}
+        
+        <tr>
+            <td colspan="3"><a href="{% url 'crear_tarea' %}">Nueva Tarea</a></td>
 
-    
-    {% empty %}
-    <h3>No hay tareas pendientes</h3>
-    
-    {% endfor %}
-    
-    <tr>
-        <td colspan="3"><a href="{% url 'crear_tarea' %}">Nueva Tarea</a></td>
+        </tr>
 
-    </tr>
-
-</table>
+    </table>
+{% endblock content%}
