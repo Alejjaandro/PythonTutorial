@@ -1,12 +1,18 @@
 {% extends 'base_template/principal.html' %}
 
 {% block content %}
+<div class="barra-superior">
+    <a href="{% url 'pendientes' %}">&#x1F860; Volver</a>
+</div>
+
+<div class="cuerpo-tarjeta">
+
     <form method="POST">
-        
         {% csrf_token %}
-        <p>¿Deseas eliminar la tarea: "{{tarea}}!?</p>
-        <input type="submit" value="Eliminar">
-        <a href="{% url 'pendientes' %}">Cancelar</a>
+        <p style="font-size: 1.5rem">¿Deseas eliminar la tarea: "{{tarea}}!?</p>
+        <input class='boton' type="submit" value="Eliminar">
 
     </form>
+
+</div>
 {% endblock content %}

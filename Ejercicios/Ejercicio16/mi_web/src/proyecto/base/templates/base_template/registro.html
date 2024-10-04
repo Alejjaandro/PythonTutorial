@@ -1,15 +1,19 @@
 {% extends 'base_template/principal.html' %}
 
 {% block content %}
+<div class="barra-superior">
     <h1>Registrate</h1>
+</div>
 
+<div class="cuerpo-tarjeta">
     <form action="" method="post">
 
         {% csrf_token %}
         {{form.as_p}}
-        <input type="submit" name="Enviar">
+        <input style="margin-top: 10px" class='boton' type="submit" name="Enviar">
 
     </form>
 
     <p>¿Ya tienes cuenta? <a href="{% url 'iniciar_sesion' %}">Inicia Sesión</a></p>
-{% endblock content %}
+</div>
+    {% endblock content %}

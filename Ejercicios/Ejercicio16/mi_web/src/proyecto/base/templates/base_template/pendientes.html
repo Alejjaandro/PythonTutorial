@@ -1,52 +1,55 @@
 {% extends 'base_template/principal.html' %}
 
 {% block content %}
-        
+<div class="barra-superior">
+    <div>
+        <h1>Hola {{request.user|title}}</h1>
+        <h3 style="margin:0">Tienes <i>{{count}}</i> tarea{{count|pluralize}} incompleta{{count|pluralize}}</h3>
+    </div>
+
     {% if request.user.is_authenticated %}
-        <p>{{request.user}}</p>
         <form action="{% url 'cerrar_sesion' %}" method="POST">
             {% csrf_token %}
             <input type="submit" value="Cerrar Sesión">
         </form>
-        <hr/>
     {% else %}
         <a href="{% url 'iniciar_sesion' %}">Iniciar Sesión</a>
-        <hr/>
     {% endif %}
 
-    <h1>Lista de Pendientes</h1>
+</div>
+
+<h1>Lista de Pendientes</h1>
+<div id="envoltorio-agregar-buscar">
 
     <form method="GET">
         <input type="text" name="area-buscar" value="{{valor_buscado}}">
-        <input type="submit" value="Buscar">
+        <input class='boton' type="submit" value="Buscar">
     </form>
+    <a id='enlace-agregar' href="{% url 'crear_tarea' %}">Nueva Tarea</a>
+</div>
 
-    <table>
-        <tr>
-            <th>Tarea</th>
-            <th>Fecha</th>
-            <th>Completada</th>
-        </tr>
+<div class="envoltorio-items-tarea">
+    {% for tarea in tareas %}
+    <div class="envoltorio-tarea">
+        {% if tarea.completo %}
+        <div class="titulo-tarea">
+            <div class="icono-tarea-completa"></div>
+            <i><s><a href="{% url 'actualizar_tarea' tarea.id %}">{{tarea}}</a></s></i>
+        </div>
+        <a class='enlace-eliminar' href="{% url 'eliminar_tarea' tarea.id %}">&#x2A2F;</a>
+        {% else %}
+        <div class="titulo-tarea">
+            <div class="icono-tarea-incompleta"></div>
+            <a href="{% url 'actualizar_tarea' tarea.id %}">{{tarea}}</a>
+        </div>
+        <a class='enlace-eliminar' href="{% url 'eliminar_tarea' tarea.id %}">&#x2A2F;</a>
+        {% endif %}
+    </div>
 
-        {% for tarea in tareas %}
-        <tr>
-            <td>{{ tarea.titulo }}</td>
-            <td>{{ tarea.fecha.day }}/{{ tarea.fecha.month }}/{{ tarea.fecha.year }} - {{ tarea.fecha.hour }}:{{ tarea.fecha.minute }}</td>
-            <td>{{ tarea.completada }}</td>
-            <td><a href="{% url 'actualizar_tarea' tarea.id %}">Editar</a></td>
-            <td><a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a></td>
-        </tr>
+    {% empty %}
+    <h3>No hay elementos en esta lista</h3>
+    {% endfor %}
+</div>
 
-        
-        {% empty %}
-        <h3>No hay tareas pendientes</h3>
-        
-        {% endfor %}
-        
-        <tr>
-            <td colspan="3"><a href="{% url 'crear_tarea' %}">Nueva Tarea</a></td>
-
-        </tr>
-
-    </table>
+</table>
 {% endblock content%}
